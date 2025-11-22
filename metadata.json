@@ -1,0 +1,5 @@
+{
+  "name": "GeneaFlow",
+  "description": "A modern, interactive family tree builder featuring advanced relationship calculation, automatic layout positioning, and a persistent infinite canvas.",
+  "requestFramePermissions": []
+}
