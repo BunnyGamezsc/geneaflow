@@ -31,8 +31,8 @@ const Header: React.FC<HeaderProps> = ({
           <Link size={20} />
         </div>
         <div>
-          <h1 className="text-lg font-bold">Family Tree</h1>
-          <p className="text-xs text-slate-400">v0.1 by BunnyGamez</p>
+          <h1 className="text-lg font-bold">GeneaFlow</h1>
+          <p className="text-xs text-slate-400">v0.2 by BunnyGamez</p>
         </div>
       </div>
       <div className="flex items-center gap-2 bg-slate-50 p-1 rounded-xl border border-slate-100">
