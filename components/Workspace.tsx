@@ -36,6 +36,9 @@ interface WorkspaceProps {
     nodeId: string,
     portType: "top" | "bottom" | "left" | "right"
   ) => void;
+  onCanvasTouchStart: (e: React.TouchEvent) => void;
+  onTouchMove: (e: React.TouchEvent) => void;
+  onNodeTouchStart: (e: React.TouchEvent, nodeId: string) => void;
 }
 
 const Workspace: React.FC<WorkspaceProps> = ({
@@ -57,6 +60,9 @@ const Workspace: React.FC<WorkspaceProps> = ({
   onUpdateNode,
   onPortMouseDown,
   onPortMouseUp,
+  onCanvasTouchStart,
+  onTouchMove,
+  onNodeTouchStart,
 }) => {
   // Group edges for rendering
   const { lineageGroups, otherEdges } = useMemo(() => {
@@ -92,11 +98,16 @@ const Workspace: React.FC<WorkspaceProps> = ({
         backgroundImage: "radial-gradient(#e2e8f0 1px, transparent 1px)",
         backgroundSize: `${20 * zoom}px ${20 * zoom}px`,
         backgroundPosition: `${offset.x}px ${offset.y}px`,
+        touchAction: "none",
       }}
       onMouseDown={onCanvasMouseDown}
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
       onMouseLeave={onMouseUp}
+      onTouchStart={onCanvasTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onMouseUp}
+      onTouchCancel={onMouseUp}
     >
       <div
         className="absolute origin-top-left"
@@ -302,6 +313,7 @@ const Workspace: React.FC<WorkspaceProps> = ({
             onUpdateNode={onUpdateNode}
             onPortMouseDown={onPortMouseDown}
             onPortMouseUp={onPortMouseUp}
+            onNodeTouchStart={onNodeTouchStart}
           />
         ))}
       </div>

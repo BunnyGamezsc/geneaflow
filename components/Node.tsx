@@ -14,6 +14,7 @@ interface NodeProps {
   onUpdateNode: (id: string, updates: Partial<FamilyNode>) => void;
   onPortMouseDown: (e: React.MouseEvent, nodeId: string, portType: 'top' | 'bottom' | 'left' | 'right') => void;
   onPortMouseUp: (e: React.MouseEvent, nodeId: string, portType: 'top' | 'bottom' | 'left' | 'right') => void;
+  onNodeTouchStart: (e: React.TouchEvent, nodeId: string) => void;
 }
 
 const Port: React.FC<{
@@ -43,7 +44,8 @@ const Node: React.FC<NodeProps> = ({
   onNodeMouseDown,
   onUpdateNode,
   onPortMouseDown,
-  onPortMouseUp
+  onPortMouseUp,
+  onNodeTouchStart,
 }) => {
   
   const toggleGender = (e: React.MouseEvent, id: string) => {
@@ -62,6 +64,7 @@ const Node: React.FC<NodeProps> = ({
   return (
     <div
       onMouseDown={(e) => onNodeMouseDown(e, node.id)}
+      onTouchStart={(e) => onNodeTouchStart(e, node.id)}
       style={{ left: node.x, top: node.y, width: NODE_WIDTH, height: NODE_HEIGHT }}
       className={`absolute flex flex-col shadow-sm rounded-xl border-2 bg-white cursor-pointer group select-none transition-all duration-150
         ${isSelected ? 'border-indigo-500 ring-2 ring-indigo-200 shadow-lg z-20' : 'border-slate-200 hover:border-indigo-300 z-10'}
