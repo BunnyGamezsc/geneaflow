@@ -42,6 +42,7 @@ export default function FamilyTreeApp() {
   const [isConnecting, setIsConnecting] = useState(false);
   const [connStart, setConnStart] = useState<ConnectionStart>(null);
   const [mousePos, setMousePos] = useState<Point>({ x: 0, y: 0 });
+  const [lastTouch, setLastTouch] = useState<Point | null>(null);
 
   // --- Persistence ---
   useEffect(() => {
@@ -324,6 +325,44 @@ export default function FamilyTreeApp() {
     setDraggedNode(null);
     setIsConnecting(false);
     setConnStart(null);
+    setLastTouch(null);
+  };
+
+  const handleCanvasTouchStart = (e: React.TouchEvent) => {
+    if (
+      e.target instanceof HTMLElement &&
+      (e.target.id === "canvas-bg" || e.target.tagName === "svg")
+    ) {
+      e.preventDefault();
+      const touch = e.touches[0];
+      setIsDraggingCanvas(true);
+      setDragStart({ x: touch.clientX - offset.x, y: touch.clientY - offset.y });
+      setLastTouch({ x: touch.clientX, y: touch.clientY });
+      setSelectedNodeId(null);
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      const touch = e.touches[0];
+      if (isConnecting) {
+        setMousePos(screenToCanvas(touch.clientX, touch.clientY));
+      }
+      if (isDraggingCanvas) {
+        setOffset({ x: touch.clientX - dragStart.x, y: touch.clientY - dragStart.y });
+      } else if (draggedNode && lastTouch) {
+        const dx = touch.clientX - lastTouch.x;
+        const dy = touch.clientY - lastTouch.y;
+        setNodes((ns) =>
+          ns.map((n) =>
+            n.id === draggedNode
+              ? { ...n, x: n.x + dx / zoom, y: n.y + dy / zoom }
+              : n
+          )
+        );
+      }
+      setLastTouch({ x: touch.clientX, y: touch.clientY });
+    }
   };
 
   const handlePortMouseDown = (
@@ -454,6 +493,14 @@ export default function FamilyTreeApp() {
     setSelectedNodeId(nodeId);
   };
 
+  const handleNodeTouchStart = (e: React.TouchEvent, nodeId: string) => {
+    e.stopPropagation();
+    const touch = e.touches[0];
+    setDraggedNode(nodeId);
+    setSelectedNodeId(nodeId);
+    setLastTouch({ x: touch.clientX, y: touch.clientY });
+  };
+
   return (
     <div className="flex flex-col h-screen w-full bg-slate-50 overflow-hidden text-slate-800 font-sans">
       <Header
@@ -493,6 +540,9 @@ export default function FamilyTreeApp() {
           onUpdateNode={updateNode}
           onPortMouseDown={handlePortMouseDown}
           onPortMouseUp={handlePortMouseUp}
+          onCanvasTouchStart={handleCanvasTouchStart}
+          onTouchMove={handleTouchMove}
+          onNodeTouchStart={handleNodeTouchStart}
         />
 
         {selectedNode && (
