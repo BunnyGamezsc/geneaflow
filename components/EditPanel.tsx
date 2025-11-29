@@ -150,4 +150,4 @@ const EditPanel: React.FC<EditPanelProps> = ({
   );
 };
 
-export default EditPanel;export default EditPanel;export default EditPanel;
+export default EditPanel;
