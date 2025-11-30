@@ -38,7 +38,13 @@ interface WorkspaceProps {
   ) => void;
   onCanvasTouchStart: (e: React.TouchEvent) => void;
   onTouchMove: (e: React.TouchEvent) => void;
+  onTouchEnd: (e: React.TouchEvent) => void;
   onNodeTouchStart: (e: React.TouchEvent, nodeId: string) => void;
+  onPortTouchStart: (
+    e: React.TouchEvent,
+    nodeId: string,
+    portType: "top" | "bottom" | "left" | "right"
+  ) => void;
 }
 
 const Workspace: React.FC<WorkspaceProps> = ({
@@ -62,7 +68,9 @@ const Workspace: React.FC<WorkspaceProps> = ({
   onPortMouseUp,
   onCanvasTouchStart,
   onTouchMove,
+  onTouchEnd,
   onNodeTouchStart,
+  onPortTouchStart,
 }) => {
   // Group edges for rendering
   const { lineageGroups, otherEdges } = useMemo(() => {
@@ -106,8 +114,8 @@ const Workspace: React.FC<WorkspaceProps> = ({
       onMouseLeave={onMouseUp}
       onTouchStart={onCanvasTouchStart}
       onTouchMove={onTouchMove}
-      onTouchEnd={onMouseUp}
-      onTouchCancel={onMouseUp}
+      onTouchEnd={onTouchEnd}
+      onTouchCancel={onTouchEnd}
     >
       <div
         className="absolute origin-top-left"
@@ -314,6 +322,7 @@ const Workspace: React.FC<WorkspaceProps> = ({
             onPortMouseDown={onPortMouseDown}
             onPortMouseUp={onPortMouseUp}
             onNodeTouchStart={onNodeTouchStart}
+            onPortTouchStart={onPortTouchStart}
           />
         ))}
       </div>

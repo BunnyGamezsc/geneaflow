@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import FamilyTreeApp from "./FamilyTreeApp"
+import FamilyTreeApp from "./FamilyTreeApp";
+import { ColorProvider } from "./context/ColorContext";
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -10,6 +11,8 @@ if (!rootElement) {
 const root = ReactDOM.createRoot(rootElement);
 root.render(
   // <React.StrictMode>
-    <FamilyTreeApp />
+    <ColorProvider>
+      <FamilyTreeApp />
+    </ColorProvider>
   // </React.StrictMode>
 );
