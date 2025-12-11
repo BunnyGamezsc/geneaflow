@@ -123,11 +123,15 @@ function getGenderedTerm(base: string, gender: Gender): string {
       : "Child-in-law",
   };
 
-  if (base.startsWith("Great-") && base.includes("Grandparent")) {
-    return base.replace("Grandparent", map["Grandparent"]);
-  }
-  if (base.startsWith("Great-") && base.includes("Aunt/Uncle")) {
-    return base.replace("Aunt/Uncle", map["Aunt/Uncle"]);
+  if (base.startsWith("Great-")) {
+    if (base.includes("Grandparent"))
+      return base.replace("Grandparent", map["Grandparent"]);
+    if (base.includes("Aunt/Uncle"))
+      return base.replace("Aunt/Uncle", map["Aunt/Uncle"]);
+    if (base.includes("Grandchild"))
+      return base.replace("Grandchild", map["Grandchild"]);
+    if (base.includes("Grand-niece/nephew"))
+      return base.replace("Grand-niece/nephew", map["Grand-niece/nephew"]);
   }
 
   return map[base] || base;
@@ -150,15 +154,15 @@ function labelForPath(
     if (rest.every((s) => s === "U")) {
       const n = rest.length;
       if (n === 1) return g("Parent-in-law");
-      if (n === 2) return "Grandparent-in-law";
-      return `${greats(n - 2)}Grandparent-in-law`;
+      if (n === 2) return g("Grandparent-in-law");
+      return g(`${greats(n - 2)}Grandparent-in-law`);
     }
     if (rest[0] === "S") {
       if (rest.length === 1) return g("Sibling-in-law");
       if (rest.slice(1).every((s) => s === "D")) {
         const downs = rest.length - 1;
-        if (downs === 1) return "Niece/Nephew-in-law";
-        return `${greats(downs - 1)}Grand-niece/nephew-in-law`;
+        if (downs === 1) return g("Niece/Nephew-in-law");
+        return g(`${greats(downs - 1)}Grand-niece/nephew-in-law`);
       }
     }
   }
@@ -167,21 +171,21 @@ function labelForPath(
     const n = norm.length;
     if (n === 1) return g("Parent");
     if (n === 2) return g("Grandparent");
-    return `${greats(n - 2)}Grandparent`;
+    return g(`${greats(n - 2)}Grandparent`);
   }
 
   if (norm.every((s) => s === "D")) {
     const n = norm.length;
     if (n === 1) return g("Child");
     if (n === 2) return g("Grandchild");
-    return `${greats(n - 2)}Grandchild`;
+    return g(`${greats(n - 2)}Grandchild`);
   }
 
   if (norm[0] === "S" && norm.slice(1).every((s) => s === "D")) {
     const downs = norm.length - 1;
     if (downs === 0) return g("Sibling");
     if (downs === 1) return g("Niece/Nephew");
-    return `${greats(downs - 1)}Grand-niece/nephew`;
+    return g(`${greats(downs - 1)}Grand-niece/nephew`);
   }
 
   const firstS = norm.indexOf("S");
@@ -194,7 +198,7 @@ function labelForPath(
     const downs = norm.length - firstS - 1;
     if (downs === 0) {
       if (ups === 1) return g("Aunt/Uncle");
-      return `${greats(ups - 1)}Aunt/Uncle`;
+      return g(`${greats(ups - 1)}Aunt/Uncle`);
     }
     const degree = Math.min(ups, downs);
     const removed = Math.abs(ups - downs);
